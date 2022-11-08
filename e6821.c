@@ -79,7 +79,7 @@ void e6821_write(int rs, uint8_t data)
         if(e6821.control_A.bits.DDR_access)
         {
             /** data A */
-            e6821.data_A = data;
+            e6821.data_A = (data & e6821.direction_A) | (e6821.data_A & (~e6821.direction_A));
             if(e6821.callbacks.write_to_device_A)
             {
                 e6821.callbacks.write_to_device_A(data,e6821.callbacks.ctx_A);
@@ -98,7 +98,7 @@ void e6821_write(int rs, uint8_t data)
         if(e6821.control_B.bits.DDR_access)
         {
             /** data B */
-            e6821.data_B = data;
+            e6821.data_B = (data & e6821.direction_B) | (e6821.data_B & (~e6821.direction_B));
             if(e6821.callbacks.write_to_device_B)
             {
                 e6821.callbacks.write_to_device_B(data,e6821.callbacks.ctx_B);
@@ -170,11 +170,11 @@ void e6821_input_from_device(e6821_port_t port, uint8_t data)
 {
     if(port == E6821_PORT_A)
     {
-        e6821.data_A = data;
+        e6821.data_A = (data & (~e6821.direction_A)) | (e6821.data_A & e6821.direction_A);
     }
     else if(port == E6821_PORT_B)
     {
-        e6821.data_B = data;
+        e6821.data_B = (data & (~e6821.direction_B)) | (e6821.data_B & e6821.direction_B);
     }
 }
 
