@@ -1,5 +1,5 @@
-#ifndef _6821_H
-#define _6821_H
+#ifndef _E_6821_H
+#define _E_6821_H
 
 #include <stdint.h>
 
