@@ -8,14 +8,14 @@ typedef struct
     union
     {
         struct {
-            uint8_t IRQ1:1;
-            uint8_t IRQ2:1;
-            uint8_t C2_output:1;
-            uint8_t C2_b4:1;
-            uint8_t C2_b3:1;
-            uint8_t DDR_access:1;
-            uint8_t C1_edge:1;
             uint8_t C1_enable:1;
+            uint8_t C1_edge:1;
+            uint8_t DDR_access:1;
+            uint8_t C2_b3:1;
+            uint8_t C2_b4:1;
+            uint8_t C2_output:1;
+            uint8_t IRQ2:1;
+            uint8_t IRQ1:1;
         } __attribute__((packed)) bits;
         uint8_t byte; 
     } control_A;
@@ -25,14 +25,14 @@ typedef struct
     union
     {
         struct {
-            uint8_t IRQ1:1;
-            uint8_t IRQ2:1;
-            uint8_t C2_output:1;
-            uint8_t C2_b4:1;
-            uint8_t C2_b3:1;
-            uint8_t DDR_access:1;
-            uint8_t C1_edge:1;
             uint8_t C1_enable:1;
+            uint8_t C1_edge:1;
+            uint8_t DDR_access:1;
+            uint8_t C2_b3:1;
+            uint8_t C2_b4:1;
+            uint8_t C2_output:1;
+            uint8_t IRQ2:1;
+            uint8_t IRQ1:1;
         } __attribute__((packed)) bits;
         uint8_t byte; 
     } control_B;
