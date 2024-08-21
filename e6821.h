@@ -1,5 +1,4 @@
-#ifndef _E_6821_H
-#define _E_6821_H
+#pragma once
 
 #include <stdint.h>
 
@@ -23,33 +22,70 @@ typedef enum
     E6821_IRQ_LINE_2
 } e6821_irq_line_t;
 
-typedef struct
+typedef struct e6821_s e6821_t;
+struct e6821_s
 {
-    uint8_t data_A;
-    uint8_t direction_A;
-    uint8_t contorl_A;
-    uint8_t data_B;
-    uint8_t direction_B;
-    uint8_t contorl_B;
-} e6821_reg_dump_t;
+    struct
+    {
+        void (*reset)(e6821_t* self);
+        /**
+         * @param rs bit1: rs1, bit0: rs0
+         * @param data data
+         */
+        void (*write)(e6821_t* self, int rs, uint8_t data);
+        /**
+         * @param rs bit1: rs1, bit0: rs0
+         */
+        uint8_t (*read)(e6821_t* self, int rs);
+        void (*input)(e6821_t* self, e6821_port_t port, uint8_t data);
+        void (*set_irq)(e6821_t* self, e6821_port_t port, e6821_irq_line_t line);
+    } iface;
+    struct
+    {
+        void (*write_to_device_A)(uint8_t data, void* ctx);
+        void* ctx_A;
+        void (*write_to_device_B)(uint8_t data, void* ctx);
+        void* ctx_B;
+        void (*lock)(void* ctx);
+        void (*unlock)(void* ctx);
+        void* lock_ctx;
+    } callbacks;
+    struct
+    {
+        uint8_t data_A;
+        uint8_t direction_A;
+        union
+        {
+            struct {
+                uint8_t C1_enable:1;
+                uint8_t C1_edge:1;
+                uint8_t DDR_access:1;
+                uint8_t C2_b3:1;
+                uint8_t C2_b4:1;
+                uint8_t C2_output:1;
+                uint8_t IRQ2:1;
+                uint8_t IRQ1:1;
+            } __attribute__((packed)) bits;
+            uint8_t byte; 
+        } control_A;
 
-typedef void(*e6821_output_to_device_t)(uint8_t data ,void* ctx);
+        uint8_t data_B;
+        uint8_t direction_B;
+        union
+        {
+            struct {
+                uint8_t C1_enable:1;
+                uint8_t C1_edge:1;
+                uint8_t DDR_access:1;
+                uint8_t C2_b3:1;
+                uint8_t C2_b4:1;
+                uint8_t C2_output:1;
+                uint8_t IRQ2:1;
+                uint8_t IRQ1:1;
+            } __attribute__((packed)) bits;
+            uint8_t byte; 
+        } control_B;
+    } regs;
+};
 
-void e6821_reset();
-void e6821_set_device_hook(e6821_port_t port, e6821_output_to_device_t write_to_device, void* ctx);
-/**
- * @param rs bit1: rs1, bit0: rs0
- * @param data data
- */
-void e6821_write(int rs, uint8_t data);
-/**
- * @param rs bit1: rs1, bit0: rs0
- */
-uint8_t e6821_read(int rs);
-void e6821_input_from_device(e6821_port_t port, uint8_t data);
-
-void e6821_set_irq(e6821_port_t port, e6821_irq_line_t line);
-
-void e6821_dump(e6821_reg_dump_t* dump);
-
-#endif
+void e6821_init(e6821_t* self);
